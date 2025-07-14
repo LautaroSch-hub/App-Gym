@@ -22,15 +22,12 @@ module.exports = (sequelize) => {
   },
   detalle_medico: {
       type: DataTypes.TEXT,
-      allowNull: false,
   },
   objetivos: {
       type: DataTypes.TEXT,
-      allowNull: false,
   },
   edad: {
       type: DataTypes.INTEGER,
-      allowNull: false,
   },
   admin: {
     type: DataTypes.BOOLEAN,
