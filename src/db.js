@@ -8,7 +8,17 @@ const { DB_USER, DB_PASSWORD, DB_HOST } = process.env;
 
 
 const connectionString = "postgresql://postgres:Macma5caca@db.dvbehyqzgeafufoxgruw.supabase.co:5432/postgres"
-const sequelize= new Sequelize(connectionString)
+const sequelize = new Sequelize(connectionString, {
+  dialect: "postgres",
+  protocol: "postgres",
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false, // necesario para Supabase
+    },
+  },
+});
+
 
 const basename = path.basename(__filename);
 const modelDefiners = [];
