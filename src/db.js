@@ -1,7 +1,6 @@
-const dns = require("dns");
-dns.setDefaultResultOrder("ipv4first"); // <--- ESTO VA PRIMERO
-
 require('dotenv').config();
+const dns = require("dns");
+dns.setDefaultResultOrder("ipv4first");
 const { Sequelize, Op } = require('sequelize');
 const fs = require('fs');
 const path = require('path');
