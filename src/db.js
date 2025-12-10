@@ -5,7 +5,7 @@ const path = require('path');
 const { DB_USER, DB_PASSWORD, DB_HOST } = process.env;
 
 
-const connectionString = "postgresql://postgres.yokksslrjamvfzlikwiq:Macma5caca$@aws-0-sa-east-1.pooler.supabase.com:6543/postgres"
+const connectionString = "postgresql://postgres:Macma5caca@db.dvbehyqzgeafufoxgruw.supabase.co:5432/postgres"
 const sequelize= new Sequelize(connectionString)
 
 const basename = path.basename(__filename);
