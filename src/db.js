@@ -1,29 +1,29 @@
 require('dotenv').config();
 const dns = require("dns");
 dns.setDefaultResultOrder("ipv4first");
-const { Sequelize, Op } = require('sequelize');
+
+const { Sequelize } = require('sequelize');
 const fs = require('fs');
 const path = require('path');
-const { DB_USER, DB_PASSWORD, DB_HOST } = process.env;
 
+const connectionString = "postgresql://postgres:Macma5caca@db.dvbehyqzgeafufoxgruw.supabase.co:5432/postgres";
 
-const connectionString = "postgresql://postgres:Macma5caca@db.dvbehyqzgeafufoxgruw.supabase.co:5432/postgres"
+// 👉 Configuración obligatoria para Supabase + Render (IPv4 + SSL)
 const sequelize = new Sequelize(connectionString, {
   dialect: "postgres",
   protocol: "postgres",
   dialectOptions: {
     ssl: {
       require: true,
-      rejectUnauthorized: false, // necesario para Supabase
-    },
-  },
+      rejectUnauthorized: false,
+    }
+  }
 });
-
 
 const basename = path.basename(__filename);
 const modelDefiners = [];
 
-// Leemos todos los archivos de la carpeta Models, los requerimos y agregamos al arreglo modelDefiners
+// Leemos todos los archivos de la carpeta Models
 fs.readdirSync(path.join(__dirname, '/models'))
   .filter((file) => (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js'))
   .forEach((file) => {
@@ -33,13 +33,18 @@ fs.readdirSync(path.join(__dirname, '/models'))
 // Inyectamos la conexión (sequelize) a todos los modelos
 modelDefiners.forEach(model => model(sequelize));
 
-// Capitalizamos los nombres de los modelos i.e., product => Product
+// Capitalizamos nombres de modelos
 let entries = Object.entries(sequelize.models);
-let capsEntries = entries.map((entry) => [entry[0][0].toUpperCase() + entry[0].slice(1), entry[1]]);
+let capsEntries = entries.map(([name, model]) => [
+  name[0].toUpperCase() + name.slice(1), 
+  model
+]);
 sequelize.models = Object.fromEntries(capsEntries);
 
-// Extraemos los modelos
-const { Usuario, Ejercicio, RutinaPersonalizada, RutinaPredefinida, RutinaPredefinidaEjercicios, RutinaPersonalizadaEjercicios, Musculo,RutinaPredefinida_Musculos, Membresia } = sequelize.models;
+// Extraemos modelos
+const { Usuario, Ejercicio, RutinaPersonalizada, RutinaPredefinida, 
+  RutinaPredefinidaEjercicios, RutinaPersonalizadaEjercicios, 
+  Musculo, RutinaPredefinida_Musculos, Membresia } = sequelize.models;
 
 // Relaciones existentes
 RutinaPredefinida.belongsToMany(Ejercicio, { through: RutinaPredefinidaEjercicios });
@@ -54,11 +59,11 @@ Membresia.belongsTo(Usuario);
 RutinaPersonalizada.belongsToMany(Ejercicio, { through: RutinaPersonalizadaEjercicios });
 Ejercicio.belongsToMany(RutinaPersonalizada, { through: RutinaPersonalizadaEjercicios });
 
-// NUEVA RELACIÓN: RutinaPredefinida <-> Musculo (Many-to-Many)
+// Nueva relación
 RutinaPredefinida.belongsToMany(Musculo, { through: RutinaPredefinida_Musculos });
 Musculo.belongsToMany(RutinaPredefinida, { through: RutinaPredefinida_Musculos });
 
-// Sincronizamos la base de datos y llenamos la tabla Musculo si está vacía
+// Sincronización
 sequelize.sync({ force: false }).then(async () => {
   try {
     const count = await Musculo.count();
@@ -80,6 +85,6 @@ sequelize.sync({ force: false }).then(async () => {
 });
 
 module.exports = {
-  ...sequelize.models, // Para importar los modelos así: const { Product, User } = require('./db.js');
-  conn: sequelize,     // Para importar la conexión: { conn } = require('./db.js');
+  ...sequelize.models,
+  conn: sequelize,
 };
