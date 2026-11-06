@@ -50,4 +50,4 @@ Configurá `DATABASE_URL` y `JWT_SECRET` como variables secretas en Render. Si l
 
 - `Membresia.js` (el modelo viejo) sigue en el proyecto pero ya no se usa. Podés borrarlo cuando quieras.
 - Al borrar un usuario se borran también sus rutinas personalizadas, su asistencia, su progreso, sus medidas y su historial de renovaciones. Antes las rutinas quedaban sin dueño.
-- Si en el futuro la base queda vacía, el usuario inicial es `admin@email.com` con contraseña `admin`: cambiala apenas entres.
+- El servidor no crea un administrador ni una contraseña predeterminada al iniciar; en una base vacía, el usuario inicial debe crearse manualmente.

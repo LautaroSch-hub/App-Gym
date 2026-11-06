@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: app-gym-api
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GYM_TIMEZONE
+        value: America/Argentina/Buenos_Aires
